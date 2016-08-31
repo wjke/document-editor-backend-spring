@@ -53,8 +53,12 @@ public class DocumentRestController {
     @RequestMapping(value = "{documentId}", method = RequestMethod.PUT)
     public ResponseEntity<Document> updateDocument(@PathVariable long documentId, @RequestBody @Valid Document document, BindingResult result) {
         Document existDocument;
-        if(result.hasErrors() || (existDocument = documentService.getDocumentById(documentId)) == null || documentService.getDocumentByTitleAndTemplate(document.getTitle(), existDocument.getTemplate()) != null)
-            throw new NotFoundException("document validation error or not found or title not unique");
+        if(result.hasErrors() || (existDocument = documentService.getDocumentById(documentId)) == null)
+            throw new NotFoundException("document validation error or not found");
+
+        Document checkTitleDocument = documentService.getDocumentByTitleAndTemplate(document.getTitle(), existDocument.getTemplate());
+        if(checkTitleDocument != null && checkTitleDocument.getId() != documentId)
+            throw new NotFoundException("title is not unique");
 
         existDocument.setTitle(document.getTitle());
         existDocument = documentService.updateDocument(existDocument);
