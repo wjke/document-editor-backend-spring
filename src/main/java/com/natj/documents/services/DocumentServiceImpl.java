@@ -1,6 +1,7 @@
 package com.natj.documents.services;
 
 import com.natj.documents.models.Document;
+import com.natj.documents.models.Template;
 import com.natj.documents.repositories.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,5 +65,10 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public Document getDocumentByTitle(String title) {
         return documentRepository.findByTitleIgnoreCase(title);
+    }
+
+    @Override
+    public Document getDocumentByTitleAndTemplate(String title, Template template) {
+        return documentRepository.findByTitleIgnoreCaseAndTemplate(title, template);
     }
 }

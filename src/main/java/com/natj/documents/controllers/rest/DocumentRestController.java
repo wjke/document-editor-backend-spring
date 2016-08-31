@@ -41,7 +41,7 @@ public class DocumentRestController {
     @RequestMapping(value = "{templateId}", method = RequestMethod.POST)
     public ResponseEntity<Document> createDocument(@PathVariable long templateId, @RequestBody @Valid Document document, BindingResult result) {
         Template template;
-        if(result.hasErrors() || documentService.getDocumentByTitle(document.getTitle()) != null || (template = templateService.getTemplateById(templateId)) == null)
+        if(result.hasErrors() || (template = templateService.getTemplateById(templateId)) == null || documentService.getDocumentByTitleAndTemplate(document.getTitle(), template) != null)
             throw new NotFoundException("document validation error or template not found or title not unique");
 
         document.setTemplate(template);
@@ -53,8 +53,8 @@ public class DocumentRestController {
     @RequestMapping(value = "{documentId}", method = RequestMethod.PUT)
     public ResponseEntity<Document> updateDocument(@PathVariable long documentId, @RequestBody @Valid Document document, BindingResult result) {
         Document existDocument;
-        if(result.hasErrors() || (existDocument = documentService.getDocumentById(documentId)) == null)
-            throw new NotFoundException("document validation error or not found");
+        if(result.hasErrors() || (existDocument = documentService.getDocumentById(documentId)) == null || documentService.getDocumentByTitleAndTemplate(document.getTitle(), existDocument.getTemplate()) != null)
+            throw new NotFoundException("document validation error or not found or title not unique");
 
         existDocument.setTitle(document.getTitle());
         existDocument = documentService.updateDocument(existDocument);

@@ -1,6 +1,7 @@
 package com.natj.documents.services;
 
 import com.natj.documents.models.Document;
+import com.natj.documents.models.Template;
 
 import java.util.List;
 
@@ -14,4 +15,5 @@ public interface DocumentService {
     boolean isDocumentExist(long id);
     List<Document> getDocumentsByTitle(String title);
     Document getDocumentByTitle(String title);
+    Document getDocumentByTitleAndTemplate(String title, Template template);
 }
